@@ -1,0 +1,371 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="sl" lang="sl">
+<head>		
+	<title>STAR WARS</title>
+
+	<link rel="shortcut icon" type="image/x-icon" href="favicon.ico" />
+	
+	<link rel="stylesheet" href="css/stil.css" type="text/css" media="all" />
+	<script src="jQuery.js"></script>
+
+	<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"> </script>
+
+	<script type="application/javascript">
+	
+	console.log("jnu1");
+	
+	function drawIt() 
+	{
+		console.log("jnu2");
+	
+		var x = 150;
+		var y = 150;
+		var dx = 2;
+		var dy = 4;
+		var WIDTH;
+		var HEIGHT;
+		var r=5;
+		var ctx;
+		var canvas;
+		
+		var paddlex;
+		var paddleh;
+		var paddlew;
+		
+		var rightDown = false;
+		var leftDown = false;
+		
+		var bricks;
+		var NROWS;
+		var NCOLS;
+		var BRICKWIDTH;
+		var BRICKHEIGHT;
+		var PADDING;
+		
+		//var paddle1=new image();
+		//paddle1.src=("slike/ladja1.png");
+		
+		var life=3;
+		
+		var f=1;
+		
+		var tocke;
+		tocke=0;
+		
+		var start=false;
+		
+		var d;
+		
+		
+		function onKeyDown(evt) 
+		{
+			if (evt.keyCode == 39)
+			{
+				rightDown = true;
+			}
+			else if (evt.keyCode == 37)
+			{
+				leftDown = true;
+			}
+			
+			else if(evt.keyCode==13)
+			{
+				start=true;
+			}
+			
+			else if(evt.keyCode==82)
+			{
+				location.reload();
+			}
+		}
+
+		function onKeyUp(evt) 
+		{
+			if (evt.keyCode == 39)
+			{
+				rightDown = false;
+			}
+			else if (evt.keyCode == 37)
+			{
+				leftDown = false;
+			}
+		}
+		
+		$(document).keydown(onKeyDown);
+		$(document).keyup(onKeyUp); 
+
+		function initbricks() 
+		{ 
+			NROWS = 5;
+			NCOLS = 5;
+			BRICKWIDTH = (WIDTH/NCOLS) - 1;
+			BRICKHEIGHT = 15;
+			PADDING = 1;
+			bricks = new Array(NROWS);
+			for (i=0; i < NROWS; i++) 
+			{
+				bricks[i] = new Array(NCOLS);
+				
+				for (j=0; j < NCOLS; j++) 
+				{
+					if(i==0)
+					{
+					bricks[i][j]=3;
+					}
+					
+					else if(i==1||i==2)
+					{
+					bricks[i][j]=2;
+					}
+					
+					else if(i==3||i==4)
+					{
+					bricks[i][j]=1;
+					}
+					
+				}				
+			}
+		}			
+		
+		function init() 
+		{
+			
+			
+			canvas=document.getElementById('canvas');
+
+			ctx = $('#canvas')[0].getContext("2d");
+			WIDTH = $("#canvas").width();
+			HEIGHT = $("#canvas").height();
+			//return setInterval(draw, 10);
+			d=setInterval(draw, 10);
+		}
+		
+		function init_paddle() 
+		{
+			paddlex = 500 / 2;
+			paddleh = 10;
+			paddlew = 100;
+		}
+		function rect(x,y,w,h) 
+		{
+			ctx.beginPath();
+			ctx.rect(x,y,w,h);
+			ctx.closePath();
+			ctx.fill();
+		}
+		
+		console.log("jnu3");
+		
+		function draw() 
+		{
+			console.log("jnu4");
+		
+			ctx.clearRect(0,0,500,500);
+			ctx.beginPath();
+			
+			ctx.fillStyle="rgb(15, 223, 226)";
+			
+			//ctx.drawImage(paddle1, paddlex,500-paddleh, paddlew, paddleh);
+			rect(paddlex, 500-paddleh, paddlew, paddleh);
+			ctx.closePath();
+			ctx.fill();
+			
+			ctx.beginPath();
+			ctx.arc(x, y, 10, 0, Math.PI*2, true);
+			ctx.fillStyle="rgb(15, 223, 226)";
+			ctx.closePath();
+			ctx.fill();
+			
+			
+			//OPEKE
+			for (i=0; i < NROWS; i++) 
+			{
+				for (j=0; j < NCOLS; j++) 
+				{
+					if (bricks[i][j] == 3) 
+					{
+						ctx.fillStyle="rgb(242, 9, 38)";
+						rect((j * (BRICKWIDTH + PADDING)) + PADDING,
+						(i * (BRICKHEIGHT + PADDING)) + PADDING,
+						BRICKWIDTH, BRICKHEIGHT);
+					}
+					
+					if (bricks[i][j] == 2) 
+					{
+						ctx.fillStyle="rgb(117, 15, 226)";
+						rect((j * (BRICKWIDTH + PADDING)) + PADDING,
+						(i * (BRICKHEIGHT + PADDING)) + PADDING,
+						BRICKWIDTH, BRICKHEIGHT);
+					}
+					
+					if (bricks[i][j] == 1) 
+					{
+						ctx.fillStyle="rgb(223, 15, 226)";
+						rect((j * (BRICKWIDTH + PADDING)) + PADDING,
+						(i * (BRICKHEIGHT + PADDING)) + PADDING,
+						BRICKWIDTH, BRICKHEIGHT);
+					}
+				}
+			}
+			
+			document.getElementById("lives").innerHTML="LIVES : "+life;
+			
+			
+			//PADLE
+			
+			if(rightDown)
+			{
+				if((paddlex+paddlew) < WIDTH)
+				{
+				paddlex +=5;
+				}
+				else
+				{
+				paddlex = WIDTH-paddlew;
+				}
+			}
+			else if(leftDown)
+			{
+				if(paddlex>0)
+				{
+				paddlex -=5;
+				}
+				else
+				{
+				paddlex=0;
+				}
+			}
+			
+			
+			
+			if(start==true)
+			{
+			
+			console.log("jnu123");
+			
+			//if(document.getElementById("demo").innerHTML=="GOOD LUCK!")
+			if (x + dx > 500-r || x + dx < 0+r)
+				dx = -dx;
+			if (y + dy < 0+r)
+				dy = -dy;
+			else if (y + dy > 500-r) 
+			{
+				if (x > paddlex && x < paddlex + paddlew) 
+				{
+					dx = 8 * ((x-(paddlex+paddlew/2))/paddlew);
+					dy = -dy;
+				}
+				else
+				{
+					life=life-1;
+				}
+			}
+			
+			if(life==0)
+			{
+				swal("GAME OVER!", "press R to restart", "");
+				clearInterval(d);
+			}
+			
+			
+			
+			
+			//ZOGA
+			
+			if (x + dx > 500 -r|| x + dx < 0 +r)
+			{
+				dx = -dx;
+			}
+			if (y + dy > 500 -r|| y + dy < 0 +r)
+			{
+				dy = -dy;
+			}
+			
+				
+				
+			//BRICKS	
+			rowheight = BRICKHEIGHT + PADDING + f/2;
+			colwidth = BRICKWIDTH + PADDING + f/2;
+			row = Math.floor(y/rowheight);
+			col = Math.floor(x/colwidth);
+			
+			if (y < NROWS * rowheight && row >= 0 && col >= 0 && bricks[row][col] > 0) 
+			{
+				dy = -dy; bricks[row][col] = bricks[row][col]-1;
+				
+				if(bricks[row][col]==0)
+				{
+					tocke += 1;
+					$("#tocke").html(tocke);
+				}
+				
+			}
+		
+			
+			if(tocke==25)
+			{
+				swal("Congratulations, YOU WON!", "press R to restart", "");
+				clearInterval(d);
+				tocke=0;
+			}
+				
+				
+
+			x += dx;
+			y += dy;
+			}
+		}
+		intervalId=init();
+		init_paddle();
+		initbricks();
+	}
+	
+	function functionGumb()
+	{
+		document.getElementById("demo").innerHTML = "GOOD LUCK!";
+	}
+	
+	</script>
+
+</head>
+<body onload="drawIt()">
+
+	<div id="head">
+		<a class="naslov">STAR WARS</a>
+	</div>
+	
+	<!--<div id="gumb">
+			<a id="demo" onClick="drawIt()" class="gumbText">CLICK TO START</a>
+	</div>-->
+	
+	
+		
+
+		<div id="glavno">
+		<canvas id="canvas" width="500" height="500"></canvas>	
+		</div>
+		
+		<div id="levoGLAVNI">
+			<div id="score">
+				<p class="tockeNASLOV">SCORE :</p>
+			</div>	
+			<div id="tockeSTETJE">
+				<a><mark id="tocke">0</mark></a>
+			</div>
+			
+			<div id="info">
+				<p class="infoText">START : ENTER</p>
+				<p class="infoText">RESEAT : R</p>
+			</div>
+			
+			
+			<div id="zivljenja">
+				<p id="lives"></p>
+			</div>
+		</div>
+		
+		
+		
+	
+</body>
+</html>
